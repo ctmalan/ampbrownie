@@ -1,0 +1,44 @@
+Puredata works well by using ampbrownie as basis.
+
+Follow the next steps:
+
+- install ampbrownie using the steps on GitHub
+- (I skipped the stage 1 install and did these steps manually without fixing the IP address)
+- run the stage 2 update
+- optionally get rid of ntp by doing sudo apt-get purge ntp
+- install puredata by doing sudo apt-get install puredata
+- now update the startup files as follows:
+
+cp /etc/rc.local rc.pi
+chown pi rc.pi
+
+Now sudo nano /etc/rc.local by removing jack and guitarix and adding
+
+su -l pi -c ./rc.pi
+
+Now nano rc.pi by removing jack and guitarix and adding
+
+pd -nogui -rt testPatch.pd
+
+testPatch.pd published by http://log.liminastudio.com/
+
+#N canvas 534 252 450 300 10;
+#X obj 123 120 osc~ 440;
+#X obj 155 206 dac~;
+#X obj 185 124 osc~ 1;
+#X obj 162 167 *~;
+#X msg 284 192 \; pd dsp 1;
+#X obj 273 110 loadbang;
+#X obj 249 234 print Running;
+#X obj 272 148 delay 100;
+#X connect 0 0 3 0;
+#X connect 2 0 3 1;
+#X connect 3 0 1 0;
+#X connect 3 0 1 1;
+#X connect 5 0 7 0;
+#X connect 7 0 4 0;
+#X connect 7 0 6 0;
+
+I also needed to run alsamixer and reboot a few times to get my Burr-Brown TI CODEC to work...
+
+(Hope this helps pd fans to get it going on RPi)
